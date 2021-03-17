@@ -5,11 +5,16 @@ client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
 
-client.on('message', msg => {
-    console.log(msg);
-  if (msg.content === 'ping') {
-    msg.reply('Pong!');
-  }
-});
+// client.on('message', msg => {
+//     console.log(msg);
+//   if (msg.content === 'ping') {
+//     msg.reply('Pong!');
+//   }
+// });
 
-client.login('NjkwNDEzMjM3NjYwOTQyMzU3.XnRDbw.Hq6FydfCvn9F_OfGw8xD4ma6BUg');
+client.on('message', msg => {
+    if(msg.embeds[0].MessageEmbed.title.includes("master")) {
+        msg.reply("You idiot! You have to make a PR!!")
+    }
+})
+
