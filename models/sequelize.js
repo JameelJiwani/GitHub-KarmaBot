@@ -1,11 +1,6 @@
 const Sequelize = require('sequelize')
 require('dotenv').config();
 
-// const UserModel = require('./user')
-// const ServerModel = require('./server')
-// const MembershipModel = require('./membership');
-// const user = require('./user');
-
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
     protocol: 'postgres',
@@ -16,23 +11,6 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
         }
     }
 });
-
-// const models = {
-//     User: UserModel.init(sequelize, Sequelize),
-//     Server: ServerModel.init(sequelize, Sequelize),
-//     Membership: MembershipModel.init(sequelize, Sequelize)
-// };
-
-// Object.values(models)
-//   .filter(model => typeof model.associate === "function")
-//   .forEach(model => model.associate(models));
-
-//   const db = {
-//     ...models,
-//     sequelize
-//   };
-  
-//   module.exports = db;
 
 const models = [
     require('./user'),
