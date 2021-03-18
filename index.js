@@ -10,7 +10,7 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialectOptions: {
         ssl: {
             require: true,
-            rejectUnauthorized: false // <<<<<<< YOU NEED THIS
+            rejectUnauthorized: false
         }
     }
 });
@@ -26,13 +26,12 @@ sequelize.authenticate().then(() => {
 });
 
 client.on('message', async msg => {
-    console.log(msg?.embeds[0]?.author);
     if(msg?.embeds[0]?.title.includes("master")) {
-        // const [user, createdUser] = await User.findOrCreate({
         const [user, createdUser] = await models.User.findOrCreate({
-            where: { discordUID: msg?.author?.id },
+            where: { userName: msg?.embeds[0]?.author.name },
             defaults: {
-                userName: msg?.author?.username,
+                userName: msg?.embeds[0]?.author.name,
+                // This is a bug now lol (GitHub bot UID, not actual user)
                 discordUID: msg?.author?.id
             }
         });
@@ -44,22 +43,24 @@ client.on('message', async msg => {
                 serverName: msg?.channel?.guild?.name
             }
         });
-
+        
         const [membership, createdMembership] = await models.Membership.findOrCreate({
-            where: { UserId: user[0].dataValues.id },
+            where: { UserId: user.dataValues.id },
             defaults: {
                 karma: 0,
-                ServerId: server[0].dataValues.id,
-                UserId: user[0].dataValues.id
+                ServerId: server.dataValues.id,
+                UserId: user.dataValues.id
             }
         });
-
-        await models.Membership.update({ karma: membership.karma - 1 }, {
+        console.log(user.dataValues);
+        console.log(server.dataValues);
+        console.log(membership.dataValues);
+        await models.Membership.update({ karma: membership.dataValues.karma - 1 }, {
             where: {
-                id: membership.id
+                id: membership.dataValues.id
             }
         });
-        msg.reply("You idiot! You have to make a PR!!\n New Karma: " + membership.karma - 1);
+        msg.reply("You idiot! You have to make a PR!!\n New Karma: " + (membership.dataValues.karma - 1));
     }
 })
 
