@@ -34,10 +34,6 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
 	sequelize.define('User', {
     discordUID: DataTypes.INTEGER,
-		username: {
-			allowNull: false,
-			type: DataTypes.STRING,
-			unique: false
-		}
+		userName: DataTypes.STRING,
 	});
 };
