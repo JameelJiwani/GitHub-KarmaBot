@@ -27,7 +27,7 @@ const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
 	sequelize.define('Server', {
-    discordServerID: DataTypes.INTEGER,
+    discordServerID: DataTypes.BIGINT,
 		serverName: {
 			allowNull: false,
 			type: DataTypes.STRING,
