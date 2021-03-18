@@ -25,7 +25,7 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-	sequelize.define('membership', {
+	sequelize.define('Membership', {
     karma: DataTypes.INTEGER
 	});
 };
