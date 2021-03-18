@@ -1,8 +1,6 @@
 const Discord = require('discord.js');
 const { Sequelize } = require('sequelize');
-const User = require('./models/user')
-const Server = require('./models/server')
-const Membership = require('./models/membership')
+const { models } = require('./models/sequelize');
 var config = require('./config/config');
 
 const client = new Discord.Client();
@@ -28,9 +26,10 @@ sequelize.authenticate().then(() => {
 });
 
 client.on('message', async msg => {
-    console.log(msg);
+    console.log(msg?.embeds[0]?.author);
     if(msg?.embeds[0]?.title.includes("master")) {
-        const [user, createdUser] = await User.findOrCreate({
+        // const [user, createdUser] = await User.findOrCreate({
+        const [user, createdUser] = await models.User.findOrCreate({
             where: { discordUID: msg?.author?.id },
             defaults: {
                 userName: msg?.author?.username,
@@ -38,7 +37,7 @@ client.on('message', async msg => {
             }
         });
 
-        const [server, createdServer] = await Server.findOrCreate({
+        const [server, createdServer] = await models.Server.findOrCreate({
             where: { discordServerID: msg?.channel?.guild?.id },
             defaults: {
                 discordServerID: msg?.channel?.guild?.id,
@@ -46,16 +45,16 @@ client.on('message', async msg => {
             }
         });
 
-        const [membership, createdMembership] = await Membership.findOrCreate({
-            where: { userId: user.id },
+        const [membership, createdMembership] = await models.Membership.findOrCreate({
+            where: { UserId: user[0].dataValues.id },
             defaults: {
                 karma: 0,
-                serverId: server.id,
-                userId: user.id
+                ServerId: server[0].dataValues.id,
+                UserId: user[0].dataValues.id
             }
         });
 
-        await Membership.update({ karma: membership.karma - 1 }, {
+        await models.Membership.update({ karma: membership.karma - 1 }, {
             where: {
                 id: membership.id
             }
